@@ -70,7 +70,7 @@ function elementToPath(tag, a) {
   return null;
 }
 
-function parseSvg(svg) {
+export function parseSvg(svg) {
   const elements = [];
   for (const m of svg.matchAll(/<(path|circle|rect|line|polyline|polygon|ellipse)\b([^>]*?)\/?>/g)) {
     const a = attrs(m[2]);
@@ -88,7 +88,7 @@ const near = (p, q) => Math.abs(p[0] - q[0]) < 1e-3 && Math.abs(p[1] - q[1]) < 1
 const r4 = (n) => Math.round(n * 1e4) / 1e4;
 const rp = (p) => [r4(p[0]), r4(p[1])];
 
-function toBeziers(d) {
+export function toBeziers(d) {
   const shapes = [];
   let cur = null, pt = [0, 0], start = [0, 0];
   const open = (p) => {
@@ -139,13 +139,13 @@ function bbox(shapes) {
 
 // ---------- motion ----------
 
-const hex = (h) => {
+export const hex = (h) => {
   const n = parseInt(h.replace("#", ""), 16);
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255, 1].map(r4);
 };
 
 /** Builds an animated property from [{t, v, ease?}] keyframes (ease applies leaving the key). */
-function animated(rawKeys, ease) {
+export function animated(rawKeys, ease) {
   // Consecutive steps share a boundary frame; keep one key per frame (the later step's).
   const keys = rawKeys.filter((k, i) => rawKeys[i + 1]?.t !== k.t);
   if (keys.length < 2) return { a: 0, k: keys[0].v };

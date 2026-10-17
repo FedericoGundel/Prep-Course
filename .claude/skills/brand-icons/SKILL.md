@@ -16,6 +16,7 @@ two colors, same motion vocabulary. Everything lives in `icons/`.
 | `icons/brand/icons.json` | Manifest of every icon in the family (source SVG, preset, accent). |
 | `icons/scripts/make-icon.mjs` | SVG → Lottie generator that applies the identity. |
 | `icons/scripts/build-icons.mjs` | Regenerates the whole family after an identity change. |
+| `icons/scripts/custom/*.mjs` | Hand-choreographed icons (multi-layer, markers). `bell-ring.mjs` is the quality reference. |
 | `icons/scripts/snapshot.mjs` | Renders a frame strip in the official Skottie player for review. |
 | `icons/public/projects/brand-icons/<name>/` | Output scenes (`lottie.json` + `controls.json`) viewable in the player. |
 
@@ -47,6 +48,10 @@ Icon sources available offline: `lucide:<name>` (lucide-static, ~2k icons) and
 - Do not tune timing per icon; add a new preset in `identity.json` instead so
   every icon that uses it moves the same way.
 - Icons are transparent; never add backgrounds.
+- Hero icons get custom choreography like `custom/bell-ring.mjs`: anticipation,
+  damped motion around a real pivot, a separate part with follow-through, and
+  named markers per state (`in`, `hover`/`ring`...). Reuse its helpers and the
+  identity values; never hard-code colors or stroke width.
 - For a motion that the generator can't express (morphs, custom character motion),
   use the `text-to-lottie` skill on the same scene, keeping the `primary`,
   `secondary` and `strokeWidth` slots and the identity values.

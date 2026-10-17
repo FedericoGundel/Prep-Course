@@ -1,6 +1,6 @@
 // Renders pinned frames of an icon in the official Skottie player into one contact-sheet PNG.
 //
-//   node scripts/snapshot.mjs bell [out.png] [--port 3030]
+//   node scripts/snapshot.mjs bell [out.png] [--port 3030] [--frames 0,20,40]
 //
 // Requires the player running (`npm run dev`).
 import { chromium } from "playwright-core";
@@ -12,14 +12,16 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
 const pi = args.indexOf("--port");
 const port = pi >= 0 ? args.splice(pi, 2)[1] : "3030";
+const fi = args.indexOf("--frames");
+const pinned = fi >= 0 ? args.splice(fi, 2)[1].split(",").map(Number) : null;
 const [name, out = resolve(root, `previews/${name}.png`)] = args;
 if (!name) {
-  console.error("Usage: node scripts/snapshot.mjs <icon-name> [out.png] [--port 3030]");
+  console.error("Usage: node scripts/snapshot.mjs <icon-name> [out.png] [--port 3030] [--frames 0,20,40]");
   process.exit(1);
 }
 
 const { op } = JSON.parse(await readFile(resolve(root, `public/projects/brand-icons/${name}/lottie.json`), "utf8"));
-const frames = [0, 0.15, 0.3, 0.45, 0.6, 0.8, 1].map((f) => Math.min(op - 1, Math.round(f * (op - 1))));
+const frames = pinned ?? [0, 0.15, 0.3, 0.45, 0.6, 0.8, 1].map((f) => Math.min(op - 1, Math.round(f * (op - 1))));
 
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium",
